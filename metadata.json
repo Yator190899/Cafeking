@@ -1,0 +1,6 @@
+{
+  "name": "Cafeking - Cafetería en Cusco",
+  "description": "Sitio web oficial de Cafeking, cafetería en Cusco, Perú fundada en el 2000. Menú digital, pedidos en línea con Yape o efectivo, historia y ubicación.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
