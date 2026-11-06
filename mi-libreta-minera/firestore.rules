@@ -1,0 +1,144 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net: Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validation helper for Note
+    function isValidNote(data) {
+      return data.userId is string && data.userId.size() > 0 && data.userId.size() <= 128
+        && data.title is string && data.title.size() > 0 && data.title.size() <= 200
+        && data.content is string && data.content.size() <= 10000
+        && data.date is string && data.date.size() <= 20
+        && (!('category' in data) || (data.category is string && data.category.size() <= 100))
+        && (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 50))
+        && (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 50));
+    }
+
+    // Validation helper for Expense
+    function isValidExpense(data) {
+      return data.userId is string && data.userId.size() > 0 && data.userId.size() <= 128
+        && data.item is string && data.item.size() > 0 && data.item.size() <= 250
+        && (!('description' in data) || (data.description is string && data.description.size() <= 1000))
+        && (data.quantity is number && data.quantity >= 0)
+        && (data.unitPrice is number && data.unitPrice >= 0)
+        && (data.total is number && data.total >= 0)
+        && data.date is string && data.date.size() <= 20
+        && data.supplier is string && data.supplier.size() <= 200
+        && data.miningArea is string && data.miningArea.size() <= 100
+        && (!('paymentMethod' in data) || (data.paymentMethod is string && data.paymentMethod.size() <= 50))
+        && (!('receiptNumber' in data) || (data.receiptNumber is string && data.receiptNumber.size() <= 100))
+        && (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 50))
+        && (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 50));
+    }
+
+    // Validation helper for Order
+    function isValidOrder(data) {
+      return data.userId is string && data.userId.size() > 0 && data.userId.size() <= 128
+        && data.productName is string && data.productName.size() > 0 && data.productName.size() <= 250
+        && data.quantity is string && data.quantity.size() > 0 && data.quantity.size() <= 100
+        && data.supplier is string && data.supplier.size() <= 200
+        && data.orderDate is string && data.orderDate.size() <= 20
+        && (!('deliveryDate' in data) || (data.deliveryDate is string && data.deliveryDate.size() <= 20))
+        && (data.status in ['pendiente', 'en_camino', 'recibido', 'cancelado'])
+        && (!('notes' in data) || (data.notes is string && data.notes.size() <= 1000))
+        && (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 50))
+        && (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 50));
+    }
+
+    // Validation helper for Reminder
+    function isValidReminder(data) {
+      return data.userId is string && data.userId.size() > 0 && data.userId.size() <= 128
+        && data.title is string && data.title.size() > 0 && data.title.size() <= 200
+        && (data.type in ['pedido', 'pago', 'compra', 'tarea', 'general'])
+        && data.dueDate is string && data.dueDate.size() <= 20
+        && (!('dueTime' in data) || (data.dueTime is string && data.dueTime.size() <= 10))
+        && data.completed is bool
+        && (!('priority' in data) || (data.priority in ['alta', 'media', 'baja']))
+        && (!('notes' in data) || (data.notes is string && data.notes.size() <= 1000))
+        && (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 50))
+        && (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 50));
+    }
+
+    // Collection: Notes
+    match /notes/{noteId} {
+      allow get: if isOwner(existing().userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isOwner(incoming().userId)
+        && isValidId(noteId)
+        && isValidNote(incoming());
+      allow update: if isOwner(existing().userId)
+        && incoming().userId == existing().userId
+        && isValidNote(incoming());
+      allow delete: if isOwner(existing().userId);
+    }
+
+    // Collection: Expenses
+    match /expenses/{expenseId} {
+      allow get: if isOwner(existing().userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isOwner(incoming().userId)
+        && isValidId(expenseId)
+        && isValidExpense(incoming());
+      allow update: if isOwner(existing().userId)
+        && incoming().userId == existing().userId
+        && isValidExpense(incoming());
+      allow delete: if isOwner(existing().userId);
+    }
+
+    // Collection: Orders
+    match /orders/{orderId} {
+      allow get: if isOwner(existing().userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isOwner(incoming().userId)
+        && isValidId(orderId)
+        && isValidOrder(incoming());
+      allow update: if isOwner(existing().userId)
+        && incoming().userId == existing().userId
+        && isValidOrder(incoming());
+      allow delete: if isOwner(existing().userId);
+    }
+
+    // Collection: Reminders
+    match /reminders/{reminderId} {
+      allow get: if isOwner(existing().userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isOwner(incoming().userId)
+        && isValidId(reminderId)
+        && isValidReminder(incoming());
+      allow update: if isOwner(existing().userId)
+        && incoming().userId == existing().userId
+        && isValidReminder(incoming());
+      allow delete: if isOwner(existing().userId);
+    }
+
+    // Connection test document
+    match /test/{docId} {
+      allow read, write: if isSignedIn();
+    }
+  }
+}

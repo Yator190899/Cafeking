@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <rect width="512" height="512" rx="128" fill="#0f172a" />
+  <circle cx="256" cy="256" r="230" stroke="#f59e0b" stroke-width="8" stroke-opacity="0.3" fill="none" />
+  <path d="M256 96 L416 256 L256 416 L96 256 Z" fill="url(#goldGradient)" stroke="#fef08a" stroke-width="6" />
+  <!-- Crossed Pickaxe Symbol in Dark Slate -->
+  <path d="M200 170 Q256 120 312 170 L290 190 Q256 155 222 190 Z" fill="#090d16" />
+  <path d="M246 180 L266 180 L266 350 L246 350 Z" fill="#090d16" rx="4" />
+  <!-- Gold Nuggets / Sparks -->
+  <circle cx="170" cy="256" r="12" fill="#fef08a" />
+  <circle cx="342" cy="256" r="12" fill="#fef08a" />
+  <defs>
+    <linearGradient id="goldGradient" x1="96" y1="96" x2="416" y2="416" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="50%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+  </defs>
+</svg>

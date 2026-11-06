@@ -1,0 +1,245 @@
+{
+  "entities": {
+    "Note": {
+      "title": "Apunte Minero",
+      "description": "Nota o apunte de campo sobre operaciones mineras",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "ID del usuario propietario",
+          "maxLength": 128
+        },
+        "title": {
+          "type": "string",
+          "description": "Título del apunte",
+          "maxLength": 200
+        },
+        "content": {
+          "type": "string",
+          "description": "Contenido detallado de la nota",
+          "maxLength": 10000
+        },
+        "date": {
+          "type": "string",
+          "description": "Fecha del apunte en formato YYYY-MM-DD",
+          "maxLength": 20
+        },
+        "category": {
+          "type": "string",
+          "description": "Categoría o área del apunte",
+          "maxLength": 100
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Marca de tiempo de creación"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Marca de tiempo de última actualización"
+        }
+      },
+      "required": ["userId", "title", "content", "date"]
+    },
+    "Expense": {
+      "title": "Gasto Minero",
+      "description": "Registro de gasto o compra en operaciones mineras",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "ID del usuario propietario",
+          "maxLength": 128
+        },
+        "item": {
+          "type": "string",
+          "description": "Qué se compró (producto o servicio)",
+          "maxLength": 250
+        },
+        "description": {
+          "type": "string",
+          "description": "Descripción detallada del gasto",
+          "maxLength": 1000
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Cantidad adquirida"
+        },
+        "unitPrice": {
+          "type": "number",
+          "description": "Precio unitario en soles peruanos (S/)"
+        },
+        "total": {
+          "type": "number",
+          "description": "Importe total en soles (S/)"
+        },
+        "date": {
+          "type": "string",
+          "description": "Fecha del gasto en formato YYYY-MM-DD",
+          "maxLength": 20
+        },
+        "supplier": {
+          "type": "string",
+          "description": "Proveedor o casa comercial",
+          "maxLength": 200
+        },
+        "miningArea": {
+          "type": "string",
+          "description": "Área de la minería asignada al gasto",
+          "maxLength": 100
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "Método de pago utilizado",
+          "maxLength": 50
+        },
+        "receiptNumber": {
+          "type": "string",
+          "description": "Número de factura, boleta o guía",
+          "maxLength": 100
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Marca de tiempo de creación"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Marca de tiempo de última actualización"
+        }
+      },
+      "required": ["userId", "item", "quantity", "unitPrice", "total", "date", "supplier", "miningArea"]
+    },
+    "Order": {
+      "title": "Pedido Minero",
+      "description": "Registro y seguimiento de pedidos de suministros o repuestos",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "ID del usuario propietario",
+          "maxLength": 128
+        },
+        "productName": {
+          "type": "string",
+          "description": "Nombre del producto o insumo",
+          "maxLength": 250
+        },
+        "quantity": {
+          "type": "string",
+          "description": "Cantidad solicitada (ej. 10 bolsas, 5 galones, 2 unidades)",
+          "maxLength": 100
+        },
+        "supplier": {
+          "type": "string",
+          "description": "Proveedor asignado al pedido",
+          "maxLength": 200
+        },
+        "orderDate": {
+          "type": "string",
+          "description": "Fecha en que se realizó el pedido (YYYY-MM-DD)",
+          "maxLength": 20
+        },
+        "deliveryDate": {
+          "type": "string",
+          "description": "Fecha estimada de entrega (YYYY-MM-DD)",
+          "maxLength": 20
+        },
+        "status": {
+          "type": "string",
+          "description": "Estado del pedido (pendiente, en_camino, recibido, cancelado)",
+          "enum": ["pendiente", "en_camino", "recibido", "cancelado"],
+          "maxLength": 50
+        },
+        "notes": {
+          "type": "string",
+          "description": "Observaciones adicionales sobre el pedido",
+          "maxLength": 1000
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Marca de tiempo de creación"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Marca de tiempo de última actualización"
+        }
+      },
+      "required": ["userId", "productName", "quantity", "supplier", "orderDate", "status"]
+    },
+    "Reminder": {
+      "title": "Recordatorio Minero",
+      "description": "Aviso o recordatorio de pagos, pedidos, compras o tareas",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "ID del usuario propietario",
+          "maxLength": 128
+        },
+        "title": {
+          "type": "string",
+          "description": "Título o asunto del recordatorio",
+          "maxLength": 200
+        },
+        "type": {
+          "type": "string",
+          "description": "Tipo de aviso (pedido, pago, compra, tarea, general)",
+          "enum": ["pedido", "pago", "compra", "tarea", "general"],
+          "maxLength": 50
+        },
+        "dueDate": {
+          "type": "string",
+          "description": "Fecha programada (YYYY-MM-DD)",
+          "maxLength": 20
+        },
+        "dueTime": {
+          "type": "string",
+          "description": "Hora programada (HH:MM)",
+          "maxLength": 10
+        },
+        "completed": {
+          "type": "boolean",
+          "description": "Si el aviso ha sido completado o atendido"
+        },
+        "priority": {
+          "type": "string",
+          "description": "Nivel de prioridad (alta, media, baja)",
+          "enum": ["alta", "media", "baja"],
+          "maxLength": 20
+        },
+        "notes": {
+          "type": "string",
+          "description": "Detalles adicionales",
+          "maxLength": 1000
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Marca de tiempo de creación"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Marca de tiempo de última actualización"
+        }
+      },
+      "required": ["userId", "title", "type", "dueDate", "completed"]
+    }
+  },
+  "firestore": {
+    "/notes/{noteId}": {
+      "schema": "Note",
+      "description": "Colección de apuntes y notas del usuario minero"
+    },
+    "/expenses/{expenseId}": {
+      "schema": "Expense",
+      "description": "Colección de gastos mineros detallados en soles (S/)"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Colección de pedidos de insumos y suministros"
+    },
+    "/reminders/{reminderId}": {
+      "schema": "Reminder",
+      "description": "Colección de recordatorios y avisos con fecha y hora"
+    }
+  }
+}
